@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitcoin Live News</title>
+    <title>Bitcoin Live News - Real-Time Updates</title>
     <style>
         * {
             margin: 0;
@@ -112,12 +112,12 @@
 <body>
     <header>
         <h1>Bitcoin Live News</h1>
-        <p>Stay Updated with the Latest Bitcoin Developments</p>
+        <p>Real-Time Updates on Bitcoin Developments</p>
     </header>
 
     <nav>
         <ul>
-            <li><a href="#home">Home</a></li>
+            <li><a href="index.html">Home</a></li>
             <li><a href="#news">Live News</a></li>
             <li><a href="#price">Price Updates</a></li>
             <li><a href="#resources">Resources</a></li>
@@ -125,38 +125,64 @@
     </nav>
 
     <section class="hero">
-        <h2>Real-Time Bitcoin News</h2>
-        <p>Get the latest updates on Bitcoin prices, market trends, and breaking news as it happens.</p>
+        <h2>Real-Time Bitcoin News Feed</h2>
+        <p>Stay ahead with the latest Bitcoin updates, refreshed automatically.</p>
     </section>
 
-    <section class="news-container" id="news">
-        <div class="news-item">
-            <h3>Bitcoin Hovers Around $84K Amid Inflation Concerns</h3>
-            <p>Bitcoin dropped below $84,000 today as a hotter-than-expected U.S. inflation report soured investor sentiment, impacting risk assets globally.</p>
-            <span class="timestamp">March 29, 2025 - 10:30 AM PDT</span>
-        </div>
-
-        <div class="news-item">
-            <h3>GameStop Boosts Bitcoin Reserves</h3>
-            <p>GameStop announced a $1.3 billion bond offering to finance further Bitcoin acquisitions, reinforcing its treasury strategy shift.</p>
-            <span class="timestamp">March 28, 2025 - 3:45 PM PDT</span>
-        </div>
-
-        <div class="news-item">
-            <h3>U.S. Spot Bitcoin ETFs See 10-Day Inflow Streak</h3>
-            <p>Bitcoin ETFs in the U.S. have recorded inflows for 10 consecutive days, the longest streak since December, signaling strong institutional interest.</p>
-            <span class="timestamp">March 28, 2025 - 9:25 AM PDT</span>
-        </div>
-
-        <div class="news-item">
-            <h3>Trump Hints at Tariff Flexibility, Bitcoin Surges</h3>
-            <p>Bitcoin hit $87,500 after President Trump suggested flexibility on tariffs, boosting crypto market optimism.</p>
-            <span class="timestamp">March 27, 2025 - 11:22 PM PDT</span>
-        </div>
+    <section class="news-container" id="news-feed">
+        <!-- Nieuwsitems worden hier dynamisch toegevoegd -->
     </section>
 
     <footer>
         <p>© 2025 Bitcoin Live News - All rights reserved</p>
     </footer>
+
+    <script>
+        // Simulatie van real-time nieuws (voor demo-doeleinden)
+        const newsFeed = document.getElementById('news-feed');
+        let newsItems = [
+            {
+                title: "Bitcoin Hovers Around $84K Amid Inflation Concerns",
+                content: "Bitcoin dropped below $84,000 today as a hotter-than-expected U.S. inflation report soured investor sentiment.",
+                timestamp: "March 29, 2025 - 11:00 AM PDT"
+            },
+            {
+                title: "GameStop Boosts Bitcoin Reserves",
+                content: "GameStop announced a $1.3 billion bond offering to finance further Bitcoin acquisitions.",
+                timestamp: "March 28, 2025 - 3:45 PM PDT"
+            }
+        ];
+
+        // Functie om nieuws weer te geven
+        function displayNews() {
+            newsFeed.innerHTML = ''; // Leegmaken voor updates
+            newsItems.forEach(item => {
+                const newsDiv = document.createElement('div');
+                newsDiv.classList.add('news-item');
+                newsDiv.innerHTML = `
+                    <h3>${item.title}</h3>
+                    <p>${item.content}</p>
+                    <span class="timestamp">${item.timestamp}</span>
+                `;
+                newsFeed.prepend(newsDiv); // Nieuwe items bovenaan toevoegen
+            });
+        }
+
+        // Simuleer een nieuw bericht elke 10 seconden
+        function addNewItem() {
+            const newItem = {
+                title: `Bitcoin Update - ${new Date().toLocaleTimeString()}`,
+                content: "A new development in the Bitcoin market has just occurred.",
+                timestamp: new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })
+            };
+            newsItems.unshift(newItem); // Voeg nieuw item bovenaan toe
+            if (newsItems.length > 10) newsItems.pop(); // Beperk tot 10 items
+            displayNews();
+        }
+
+        // Start de nieuwsweergave
+        displayNews();
+        setInterval(addNewItem, 10000); // Voeg elke 10 seconden een nieuw item toe (demo)
+    </script>
 </body>
 </html>
