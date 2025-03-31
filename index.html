@@ -3,162 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitcoin - The Future of Money</title>
+    <title>Bitcoin 90s Style</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
         body {
-            background: #f0f2f5;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        header {
-            background: #1a1a1a;
-            color: #fff;
-            padding: 2rem;
+            background-color: #0000FF;
+            font-family: 'Comic Sans MS', sans-serif;
+            color: #FFD700;
             text-align: center;
+            margin: 0;
         }
-
-        nav {
-            background: #fff;
-            padding: 1rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        h1 {
+            font-size: 3em;
+            margin-top: 50px;
         }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
+        h2 {
+            font-size: 2em;
+            margin-top: 20px;
         }
-
-        nav a {
-            text-decoration: none;
-            color: #f7931a;
-            font-weight: bold;
+        p {
+            font-size: 1.2em;
         }
-
-        nav a:hover {
-            color: #e68a00;
+        .btn {
+            background-color: #FF4500;
+            color: #FFFFFF;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            cursor: pointer;
+            margin-top: 30px;
         }
-
-        .hero {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: linear-gradient(45deg, #f7931a, #e68a00);
-            color: #fff;
+        .btn:hover {
+            background-color: #FFD700;
+            color: #0000FF;
         }
-
-        .hero-btn {
-            display: inline-block;
-            margin-top: 1rem;
-            padding: 0.8rem 2rem;
-            background: #fff;
-            color: #f7931a;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 5px;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .hero-btn:hover {
-            background: #f7931a;
-            color: #fff;
-        }
-
-        .content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .card {
-            background: #fff;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
         footer {
-            text-align: center;
-            padding: 1rem;
-            background: #1a1a1a;
-            color: #fff;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            margin-top: 50px;
+            font-size: 1em;
+            color: #FFFFFF;
         }
-
-        @media (max-width: 768px) {
-            nav ul {
-                flex-direction: column;
-                text-align: center;
-            }
+        .gif-container {
+            margin-top: 30px;
+        }
+        img {
+            width: 400px;
+            border: 5px solid #FFD700;
+        }
+        .banner {
+            background-color: #32CD32;
+            padding: 15px;
+            font-size: 1.5em;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Bitcoin</h1>
-        <p>The Future of Money</p>
-    </header>
+    <div class="banner">
+        <marquee><strong>Welcome to the Retro Bitcoin Website!</strong></marquee>
+    </div>
 
-    <nav>
-        <ul>
-            <li><a href="#what-is-bitcoin">What is Bitcoin?</a></li>
-            <li><a href="#benefits">Benefits</a></li>
-            <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#get-started">Get Started</a></li>
-        </ul>
-    </nav>
+    <h1>Bitcoin - The Future of Money</h1>
+    <h2>Embrace the Digital Revolution</h2>
 
-    <section class="hero">
-        <h2>Welcome to the World of Bitcoin</h2>
-        <p>Discover the revolutionary digital currency that's changing the financial landscape.</p>
-        <a href="https://news.bitcoinen.me" class="hero-btn">Check Live Bitcoin News</a>
-    </section>
+    <p>Bitcoin is a decentralized digital currency that has revolutionized how people think about money.</p>
 
-    <section class="content" id="what-is-bitcoin">
-        <div class="card">
-            <h3>What is Bitcoin?</h3>
-            <p>Bitcoin is a decentralized digital currency that operates without a central bank. It was created in 2009 by an unknown person or group using the pseudonym Satoshi Nakamoto.</p>
-        </div>
+    <p>Buy, sell, and trade Bitcoin with ease. The future is here, and it's powered by blockchain technology!</p>
 
-        <div class="card" id="benefits">
-            <h3>Benefits</h3>
-            <ul>
-                <li>Decentralized</li>
-                <li>Low transaction fees</li>
-                <li>Fast international payments</li>
-                <li>Transparent blockchain</li>
-            </ul>
-        </div>
+    <div class="gif-container">
+        <img src="https://example.com/bitcoin.gif" alt="Bitcoin GIF">
+    </div>
 
-        <div class="card" id="how-it-works">
-            <h3>How It Works</h3>
-            <p>Bitcoin operates on a blockchain - a distributed ledger that records all transactions. Miners verify transactions by solving complex mathematical problems.</p>
-        </div>
-
-        <div class="card" id="get-started">
-            <h3>Get Started</h3>
-            <p>1. Create a wallet<br>
-               2. Buy Bitcoin through an exchange<br>
-               3. Store your Bitcoin securely<br>
-               4. Start making transactions</p>
-        </div>
-    </section>
+    <button class="btn" onclick="alert('Get ready to enter the world of Bitcoin!')">Learn More</button>
 
     <footer>
-        <p>© 2025 Bitcoin Info - All rights reserved</p>
+        <p>Created with love in the 90s | Powered by the blockchain</p>
     </footer>
 </body>
 </html>
