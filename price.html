@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cool Bitcoin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #101010 0%, #1a1a1a 100%); /* Darker gradient */
+        }
+        .dashboard-card {
+            background-color: rgba(29, 29, 37, 0.8); /* Slightly transparent dark card */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 20px 40px -10px rgba(247, 147, 26, 0.3); /* Bitcoin orange glow */
+        }
+        .stat-value {
+            color: #F7931A; /* Bitcoin Orange */
+        }
+        .positive-change {
+            color: #34D399; /* Tailwind Emerald 400 */
+        }
+        .negative-change {
+            color: #F87171; /* Tailwind Red 400 */
+        }
+        .neutral-change {
+            color: #9CA3AF; /* Tailwind Gray 400 */
+        }
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+        .cool-loader {
+            width: 60px;
+            height: 60px;
+            border: 6px solid transparent;
+            border-top-color: #F7931A;
+            border-right-color: #F7931A;
+            border-radius: 50%;
+            animation: cool-spin 0.8s linear infinite;
+            margin-bottom: 1rem;
+        }
+        @keyframes cool-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .data-block {
+            border-left: 3px solid #F7931A;
+            padding-left: 1.5rem;
+        }
+        .refresh-button {
+            background-color: #F7931A;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .refresh-button:hover {
+            background-color: #e0810a;
+            transform: scale(1.05);
+        }
+        .price-flash {
+            animation: flash 0.7s ease-out;
+        }
+        @keyframes flash {
+            0% { background-color: rgba(247, 147, 26, 0.2); }
+            100% { background-color: transparent; }
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col items-center justify-center p-4 selection:bg-orange-500 selection:text-white">
+
+    <div class="container mx-auto max-w-4xl w-full">
+        <header class="text-center mb-10">
+            <div class="flex items-center justify-center text-orange-400 mb-3">
+                <i class="fab fa-bitcoin fa-4x mr-4 text-[#F7931A]"></i>
+                <h1 class="text-5xl md:text-6xl font-black tracking-tight">Bitcoin <span class="text-slate-300">Dashboard</span></h1>
+            </div>
+            <p class="text-slate-400 text-xl">Your cool overview of Bitcoin's performance.</p>
+        </header>
+
+        <div id="loader-container" class="loader-container">
+            <div class="cool-loader"></div>
+            <p class="text-slate-400 text-lg">Fetching latest Bitcoin data...</p>
+        </div>
+
+        <div id="error-message-container" class="hidden text-center my-8">
+            <div class="bg-red-800/50 text-red-300 p-6 rounded-lg shadow-lg border border-red-600/70">
+                <i class="fas fa-wifi-slash fa-3x mb-3 text-red-400"></i>
+                <h3 class="text-2xl font-semibold mb-2">Connection Error</h3>
+                <p id="error-text" class="mb-4">Could not fetch Bitcoin data. Please check your internet connection or the API might be temporarily unavailable.</p>
+                <button id="retry-button" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300 ease-in-out">
+                    <i class="fas fa-redo-alt mr-2"></i>Retry
+                </button>
+            </div>
+        </div>
+
+        <div id="dashboard-content" class="dashboard-card p-6 md:p-10 rounded-2xl shadow-2xl hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                <div class="data-block">
+                    <h2 class="text-3xl font-bold text-slate-200 mb-6 flex items-center">
+                        <i class="fas fa-dollar-sign fa-fw mr-3 text-green-400"></i>USD Stats
+                    </h2>
+                    <div class="space-y-5">
+                        <div id="usd-price-container">
+                            <p class="text-sm text-slate-400 uppercase tracking-wider">Current Price</p>
+                            <p id="btc-price-usd" class="text-4xl font-bold stat-value">$-.--</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-400 uppercase tracking-wider">24h Change</p>
+                            <p id="btc-change-usd" class="text-2xl font-semibold">-.--%</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-400 uppercase tracking-wider">Market Cap</p>
+                            <p id="btc-marketcap-usd" class="text-2xl font-semibold stat-value">$-.--</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-400 uppercase tracking-wider">24h Volume</p>
+                            <p id="btc-volume-usd" class="text-2xl font-semibold stat-value">$-.--</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-block">
+                    <h2 class="text-3xl font-bold text-slate-200 mb-6 flex items-center">
+                        <i class="fas fa-euro-sign fa-fw mr-3 text-blue-400"></i>EUR Stats
+                    </h2>
+                    <div class="space-y-5">
+                        <div id="eur-price-container">
+                            <p class="text-sm text-slate-400 uppercase tracking-wider">Current Price</p>
+                            <p id="btc-price-eur" class="text-4xl font-bold stat-value">€-.--</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-400 uppercase tracking-wider">24h Change</p>
+                            <p id="btc-change-eur" class="text-2xl font-semibold">-.--%</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-400 uppercase tracking-wider">Market Cap</p>
+                            <p id="btc-marketcap-eur" class="text-2xl font-semibold stat-value">€-.--</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-400 uppercase tracking-wider">24h Volume</p>
+                            <p id="btc-volume-eur" class="text-2xl font-semibold stat-value">€-.--</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-10 pt-6 border-t border-slate-700/50 flex flex-col sm:flex-row items-center justify-between">
+                <button id="refresh-button" class="refresh-button text-white font-bold py-3 px-8 rounded-lg shadow-lg mb-4 sm:mb-0 w-full sm:w-auto">
+                    <i class="fas fa-bolt mr-2"></i>Refresh Now
+                </button>
+                <p class="text-sm text-slate-500 text-center sm:text-right">
+                    <i class="fas fa-clock mr-1"></i>Last updated: <span id="last-updated">N/A</span>
+                </p>
+            </div>
+        </div>
+         <footer class="text-center mt-10 text-xs text-slate-600">
+            Powered by <a href="https://www.coingecko.com/en/api" target="_blank" rel="noopener noreferrer" class="text-orange-500 hover:underline">CoinGecko API</a>.
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const elements = {
+            priceUsd: document.getElementById('btc-price-usd'),
+            changeUsd: document.getElementById('btc-change-usd'),
+            marketCapUsd: document.getElementById('btc-marketcap-usd'),
+            volumeUsd: document.getElementById('btc-volume-usd'),
+            priceEur: document.getElementById('btc-price-eur'),
+            changeEur: document.getElementById('btc-change-eur'),
+            marketCapEur: document.getElementById('btc-marketcap-eur'),
+            volumeEur: document.getElementById('btc-volume-eur'),
+            lastUpdated: document.getElementById('last-updated'),
+            refreshButton: document.getElementById('refresh-button'),
+            retryButton: document.getElementById('retry-button'),
+            loaderContainer: document.getElementById('loader-container'),
+            errorContainer: document.getElementById('error-message-container'),
+            errorText: document.getElementById('error-text'),
+            dashboardContent: document.getElementById('dashboard-content'),
+            usdPriceContainer: document.getElementById('usd-price-container'),
+            eurPriceContainer: document.getElementById('eur-price-container'),
+        };
+
+        // API URL and Configuration
+        const API_URL = 'https://api.coingecko.com/api/v3/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
+        const UPDATE_INTERVAL = 60000; // 60 seconds
+        let autoUpdateIntervalId = null;
+
+        // Helper to format large numbers
+        function formatLargeNumber(num, locale = 'en-US', currency = null) {
+            if (num === null || num === undefined) return currency ? `${currency}-.--` : '-.--';
+            const absNum = Math.abs(num);
+            let suffix = '';
+            let divisor = 1;
+
+            if (absNum >= 1.0e+12) { // Trillion
+                suffix = 'T';
+                divisor = 1.0e+12;
+            } else if (absNum >= 1.0e+9) { // Billion
+                suffix = 'B';
+                divisor = 1.0e+9;
+            } else if (absNum >= 1.0e+6) { // Million
+                suffix = 'M';
+                divisor = 1.0e+6;
+            }
+            
+            const value = (num / divisor).toLocaleString(locale, { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+            });
+            return (currency ? currency : '') + value + suffix;
+        }
+
+
+        // Fetch and display Bitcoin data
+        async function fetchBitcoinData() {
+            elements.loaderContainer.style.display = 'flex';
+            elements.errorContainer.classList.add('hidden');
+            // elements.dashboardContent.classList.add('hidden'); // Keep old data visible briefly if preferred
+
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) {
+                    if (response.status === 429) {
+                        throw new Error(`API rate limit exceeded (Status ${response.status}). Please wait a moment.`);
+                    }
+                    throw new Error(`Network response was not ok (Status ${response.status})`);
+                }
+                const data = await response.json();
+                
+                if (data && data.market_data) {
+                    updateUI(data.market_data);
+                    elements.dashboardContent.classList.remove('hidden');
+                    elements.errorContainer.classList.add('hidden');
+                } else {
+                    throw new Error('Invalid data structure from API.');
+                }
+            } catch (error) {
+                console.error('Error fetching Bitcoin data:', error);
+                elements.errorText.textContent = error.message;
+                elements.errorContainer.classList.remove('hidden');
+                elements.dashboardContent.classList.add('hidden'); // Hide dashboard on error
+                stopAutoRefresh();
+            } finally {
+                elements.loaderContainer.style.display = 'none';
+            }
+        }
+
+        // Update UI elements with fetched data
+        function updateUI(marketData) {
+            const { current_price, price_change_percentage_24h_in_currency, market_cap, total_volume } = marketData;
+
+            // USD Data
+            elements.priceUsd.textContent = `$${current_price.usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            updateChangeVisuals(elements.changeUsd, price_change_percentage_24h_in_currency.usd);
+            elements.marketCapUsd.textContent = formatLargeNumber(market_cap.usd, 'en-US', '$');
+            elements.volumeUsd.textContent = formatLargeNumber(total_volume.usd, 'en-US', '$');
+            
+            // EUR Data
+            elements.priceEur.textContent = `€${current_price.eur.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            updateChangeVisuals(elements.changeEur, price_change_percentage_24h_in_currency.eur);
+            elements.marketCapEur.textContent = formatLargeNumber(market_cap.eur, 'de-DE', '€');
+            elements.volumeEur.textContent = formatLargeNumber(total_volume.eur, 'de-DE', '€');
+
+            // Flash price update
+            elements.usdPriceContainer.classList.add('price-flash');
+            elements.eurPriceContainer.classList.add('price-flash');
+            setTimeout(() => {
+                elements.usdPriceContainer.classList.remove('price-flash');
+                elements.eurPriceContainer.classList.remove('price-flash');
+            }, 700);
+
+            elements.lastUpdated.textContent = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        // Update visuals for price change (color and icon)
+        function updateChangeVisuals(element, change) {
+            if (change === null || change === undefined) {
+                element.textContent = '-.--%';
+                element.className = 'text-2xl font-semibold neutral-change';
+                return;
+            }
+            const changeFixed = change.toFixed(2);
+            element.classList.remove('positive-change', 'negative-change', 'neutral-change');
+            let iconHtml = '';
+
+            if (change > 0) {
+                element.classList.add('positive-change');
+                iconHtml = '<i class="fas fa-arrow-trend-up fa-sm mr-2"></i>';
+            } else if (change < 0) {
+                element.classList.add('negative-change');
+                iconHtml = '<i class="fas fa-arrow-trend-down fa-sm mr-2"></i>';
+            } else {
+                element.classList.add('neutral-change');
+            }
+            element.innerHTML = `${iconHtml}${changeFixed}%`;
+        }
+
+        // Auto-refresh logic
+        function startAutoRefresh() {
+            stopAutoRefresh(); // Clear any existing interval
+            autoUpdateIntervalId = setInterval(fetchBitcoinData, UPDATE_INTERVAL);
+        }
+
+        function stopAutoRefresh() {
+            if (autoUpdateIntervalId) {
+                clearInterval(autoUpdateIntervalId);
+                autoUpdateIntervalId = null;
+            }
+        }
+
+        // Event Listeners
+        elements.refreshButton.addEventListener('click', () => {
+            fetchBitcoinData();
+            startAutoRefresh(); // Restart interval on manual refresh
+        });
+        elements.retryButton.addEventListener('click', () => {
+            fetchBitcoinData();
+            startAutoRefresh(); // Restart interval on retry
+        });
+
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopAutoRefresh();
+            } else {
+                fetchBitcoinData(); // Fetch fresh data when tab becomes visible
+                startAutoRefresh();
+            }
+        });
+
+        // Initial Load
+        fetchBitcoinData();
+        startAutoRefresh();
+    </script>
+
+</body>
+</html>
